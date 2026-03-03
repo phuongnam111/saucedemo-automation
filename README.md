@@ -1,7 +1,3 @@
-====================================================================
-  PROJECT STRUCTURE — saucedemo-automation
-====================================================================
-
 saucedemo-automation/                         ← Root project folder
 │
 │── pom.xml                                   ← Maven config (dependencies)
