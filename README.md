@@ -1,86 +1,71 @@
-saucedemo-automation/                         ← Root project folder
-│
-│── pom.xml                                   ← Maven config (dependencies)
-│── testng.xml                                ← TestNG config (parallel browsers)
-│── README.md                                 ← Project documentation
-│
-├── .github/
-│   └── workflows/
-│       └── test.yml                          ← GitHub Actions CI pipeline
-│
-├── screenshots/                              ← Auto-created on test failure
-│
-└── src/
-    ├── main/java/com/saucedemo/
-    │   │
-    │   ├── pages/                            ← PAGE OBJECT MODEL classes
-    │   │   ├── BasePage.java                 ← Base class (wait, click, type)
-    │   │   ├── LoginPage.java                ← Login page actions & locators
-    │   │   ├── InventoryPage.java            ← Product listing page
-    │   │   ├── CartPage.java                 ← Shopping cart page
-    │   │   ├── CheckoutStepOnePage.java      ← Checkout form (name, zip)
-    │   │   ├── CheckoutStepTwoPage.java      ← Order review / summary
-    │   │   └── CheckoutCompletePage.java     ← Order confirmation
-    │   │
-    │   └── utils/                            ← UTILITY classes
-    │       ├── DriverFactory.java            ← Browser init (ThreadLocal)
-    │       ├── ScreenshotUtil.java           ← Capture screenshot on failure
-    │       └── TestListener.java             ← TestNG listener (auto screenshot)
-    │
-    └── test/java/com/saucedemo/tests/       ← TEST classes
-        ├── BaseTest.java                     ← Setup/teardown (BeforeMethod)
-        ├── LoginTest.java                    ← 13 login test cases
-        └── CartCheckoutTest.java             ← 12 cart & checkout test cases
+# SauceDemo Automation
 
+Automated test suite for [SauceDemo](https://www.saucedemo.com/) using **Selenium WebDriver**, **Java**, and **TestNG**, with parallel cross-browser execution and GitHub Actions CI integration.
 
-# SauceDemo Automation Test Suite
-
-## Overview
-Automated test suite for [SauceDemo](https://www.saucedemo.com/) using 
-**Selenium WebDriver + Java + TestNG**, with parallel cross-browser 
-execution and GitHub Actions CI integration.
+---
 
 ## Tech Stack
-| Component | Technology |
-|-----------|-----------|
-| Language | Java 17 |
-| Test Framework | TestNG 7.9 |
-| Browser Automation | Selenium WebDriver 4.18 |
-| Driver Management | WebDriverManager 5.7 |
-| Build Tool | Maven |
-| CI/CD | GitHub Actions |
-| Browsers | Chrome + Firefox (parallel) |
+
+| Component           | Technology                    |
+|---------------------|-------------------------------|
+| Language            | Java 17                       |
+| Test Framework      | TestNG 7.9                    |
+| Browser Automation  | Selenium WebDriver 4.18       |
+| Driver Management   | WebDriverManager 5.7          |
+| Build Tool          | Maven                         |
+| CI/CD               | GitHub Actions                |
+| Browsers            | Chrome, Firefox (parallel)    |
+
+---
 
 ## Project Structure
-```
-├── pages/          # Page Object Model classes
-├── utils/          # DriverFactory, ScreenshotUtil, TestListener
-├── tests/          # Test classes (LoginTest, CartCheckoutTest)
-├── deliverables/   # E-Wallet test suite (Problem 2): test cases, exploratory, UX
-├── testng.xml      # Parallel execution config
-└── pom.xml         # Maven dependencies
+
+```text
+saucedemo-automation/
+|-- pom.xml                    # Maven config & dependencies
+|-- testng.xml                 # TestNG config (parallel Chrome + Firefox)
+|-- README.md
+|-- .github/workflows/
+|   +-- test.yml               # CI pipeline (GitHub Actions)
+|-- screenshots/               # Screenshots on test failure (auto-created)
++-- src/
+    |-- main/java/com/saucedemo/
+    |   |-- pages/             # Page Object Model
+    |   |   |-- BasePage.java
+    |   |   |-- LoginPage.java
+    |   |   |-- InventoryPage.java
+    |   |   |-- CartPage.java
+    |   |   |-- CheckoutStepOnePage.java
+    |   |   |-- CheckoutStepTwoPage.java
+    |   |   +-- CheckoutCompletePage.java
+    |   +-- utils/
+    |       |-- DriverFactory.java    # Browser init (ThreadLocal)
+    |       |-- ScreenshotUtil.java   # Screenshot on failure
+    |       +-- TestListener.java     # TestNG listener (auto screenshot)
+    +-- test/java/com/saucedemo/tests/
+        |-- BaseTest.java      # Setup/teardown (BeforeMethod)
+        |-- LoginTest.java     # 13 login test cases
+        +-- CartCheckoutTest.java  # 12 cart & checkout test cases
 ```
 
-### Deliverables (E-Wallet — Problem 2)
-The `deliverables/` folder contains design test suite artifacts for the E-Wallet scenario:
-- **EWallet_Test_Cases.md** — Test cases (Registration, Send Money, Regression) in maintainable format
-- **EWallet_Test_Cases.csv** — Same test cases for Excel/Google Sheets
-- **EWallet_Exploratory_And_UX.md** — Exploratory scenarios (Wallet Top-up) and UI/UX feedback
-- **README** — Mapping to assignment requirements and usage
+---
 
 ## Test Coverage
-### Login Tests (13 cases)
-- Successful login with standard_user
-- Locked out user handling
+
+### Login (13 test cases)
+
+- Successful login with `standard_user`
+- Locked out user handling (`locked_out_user`)
 - Invalid username / password
 - Empty credentials (both, username only, password only)
 - Performance glitch user
 - SQL Injection & XSS in username
-- Direct URL access without auth
+- Direct URL access without login
 - Username with spaces
 - Login → Logout → Verify redirect
 
-### Cart & Checkout Tests (12 cases)
+### Cart & Checkout (12 test cases)
+
 - Add single / multiple items
 - Add item by name
 - Verify cart contents match added items
@@ -92,31 +77,53 @@ The `deliverables/` folder contains design test suite artifacts for the E-Wallet
 - Cancel checkout preserves cart
 - Continue shopping navigation
 
+---
+
 ## Running Tests
 
-### Local execution:
+### Local execution
+
 ```bash
-# Run all tests (Chrome + Firefox parallel)
+# Run all tests (Chrome + Firefox in parallel)
 mvn clean test
 
-# Run specific test class
+# Run a specific test class
 mvn test -Dtest=LoginTest
+mvn test -Dtest=CartCheckoutTest
 
-# Run with specific browser only
+# Run with a single browser
 mvn test -Dbrowser=chrome
+mvn test -Dbrowser=firefox
 ```
 
-### CI (GitHub Actions):
-Tests run automatically on push/PR to main branch.
-Screenshots captured on failure are uploaded as artifacts.
+### CI (GitHub Actions)
+
+- **Trigger:** Push or pull request to `main` / `develop`, or manual run (workflow_dispatch).
+- **Steps:** Set up JDK 17, Chrome, Firefox → run `mvn clean test`.
+- **On failure:** Screenshots are saved to `screenshots/` and uploaded as artifact `failure-screenshots`.
+- **Reports:** Artifact `test-reports` contains Surefire reports, retained for 30 days.
+
+---
 
 ## Design Decisions
-- **Page Object Model**: Each page is a class with locators and 
-  actions encapsulated. Changes to UI only require updates in 
-  one place.
-- **ThreadLocal WebDriver**: Enables safe parallel execution — 
-  each thread gets its own browser instance.
-- **Auto Screenshot on Failure**: TestListener captures screenshots 
-  automatically without extra code in test methods.
-- **Headless Mode**: Default for CI. Remove --headless flags 
-  for local debugging.
+
+| Decision                  | Rationale |
+|---------------------------|-----------|
+| **Page Object Model**     | Each page is a class with locators and actions; UI changes require updates in one place. |
+| **WebDriver ThreadLocal** | Each thread gets its own browser instance; safe for parallel execution. |
+| **Screenshot on failure** | `TestListener` captures screenshots automatically; no extra code in test methods. |
+| **Headless (CI)**         | Headless by default in CI; remove `--headless` for local debugging if needed. |
+
+---
+
+## Requirements
+
+- **Java 17**
+- **Maven 3.6+**
+- **Chrome** and/or **Firefox** (WebDriverManager downloads the matching drivers automatically)
+
+---
+
+## License
+
+This project is for learning and test automation purposes.
