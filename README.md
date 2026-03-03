@@ -124,6 +124,12 @@ mvn test -Dbrowser=firefox
 
 ---
 
+## References
+
+- [E-Wallet QA Automation — Problem 2: Test Suite Design](https://docs.google.com/document/d/11TqnKv-S03ZM1TRGKGnN-t4B1Ung_1jm3boTG-VBSFE/edit?tab=t.0) (Google Docs)
+
+---
+
 ## License
 
 This project is for learning and test automation purposes.
